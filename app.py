@@ -21,17 +21,17 @@ app = Flask(__name__)
 def index():
     # 返回html模板文件
     return render_template('index.html')
-# list路由
-@app.route('/list')
-def list():
-    # 返回字符串List
-    return 'List'
-@app.route('/detail')
-def detail():
-    return 'Detail'
-# user路由 接收参数
-@app.route('/user/<string:username>')
-def user(username):
+# register路由
+@app.route('/register')
+def register():
+    return render_template('register.html')
+# login路由
+@app.route('/login')
+def login():
+    return render_template('login.html')
+# home路由 接收参数
+@app.route('/home/<string:username>')
+def home(username):
     return 'Hello %s' % username
 # 接口文档
 # 操作数据库方法
@@ -45,16 +45,43 @@ def conn_mysql(sql):
     cur.close()
     conn.close()
     return res
-# 登录接口
-@app.route('/login',methods=['get','post'])
+# 注册接口
+@app.route('/user/register',methods=['get','post'])
 # 开放接口
 @allow_cross_domain
-def login():
+def userRegister():
     if request.method == 'POST':
         username = request.form['username']
+        userpass = request.form['password']
         sql = 'select * from user where username="%s";' % username
         res = conn_mysql(sql)  # 执行sql
-        return json.dumps(res, ensure_ascii=False)
+        if res:
+            res = {
+                "code": 1,
+                "msg": "该用户名已存在"
+            }
+            return json.dumps(res, ensure_ascii=False)
+        else:
+            sql = 'insert into user(username,userpass) value("%s","%s")' % (username,userpass)
+            res = conn_mysql(sql)
+            res = {"code": 0}
+            return json.dumps(res, ensure_ascii=False)
+# 登录接口
+@app.route('/user/login',methods=['get','post'])
+# 开放接口
+@allow_cross_domain
+def userLogin():
+    if request.method == 'POST':
+        username = request.form['username']
+        userpass = request.form['password']
+        sql = 'select * from user where username="%s" and userpass="%s"' % (username,userpass)
+        res = conn_mysql(sql)  # 执行sql
+        if res:
+            res = {"code": 0}
+            return json.dumps(res, ensure_ascii=False)
+        else:
+            res = {"code": 1,"msg": "用户名或密码不正确"}
+            return json.dumps(res, ensure_ascii=False)
 # 404Error
 @app.errorhandler(404)
 def page_not_found(error):
