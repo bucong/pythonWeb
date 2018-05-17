@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>python</title>
-    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/css/style.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div class="navbar navbar-default">
@@ -21,28 +21,55 @@
             </div>
             <div class="collapse navbar-collapse" id="coll1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="javascript:;" class="logout">卜聪 ，退出</a></li>
+                    {% if user != '' %}
+                    <li><a href="javascript:;" class="logout">{{user}}，退出</a></li>
+                    {% else %}
                     <li><a href="{{url_for('.login')}}">登录</a></li>
                     <li><a href="{{url_for('.register')}}">注册</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </div>
+    <div class="container">
+        <div class="carousel slide" id="car">
+            <ol class="carousel-indicators">
+                <!--data-slide-to="index"控制点和轮播子元素的index相对应-->
+                <li class="active" data-target="#car" data-slide-to="0"></li>
+                <li data-target="#car" data-slide-to="1"></li>
+                <li data-target="#car" data-slide-to="2"></li>
+                <li data-target="#car" data-slide-to="3"></li>
+            </ol>
+            <div class="carousel-inner in">
+                <div class="item active"><img src="../static/img/1.png" alt="1" width="100%"/></div>
+                <div class="item"><img src="../static/img/2.png" alt="2" width="100%"/></div>
+                <div class="item"><img src="../static/img/3.png" alt="3" width="100%"/></div>
+                <div class="item"><img src="../static/img/4.png" alt="4" width="100%"/></div>
+            </div>
+            <a href="#car" class="carousel-control left" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+            <a href="#car" class="carousel-control right" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+        </div>
+    </div>
 </body>
 <script>
-    $.ajax({
-        type: 'post',
-        url: '/user/login',
-        data: {
-            username: 'bucong',
-            password: 'bucong5733'
-        },
-        success: function(res){
-            console.log(JSON.parse(res))
-        },
-        error: function(err){
-            console.log(err)
-        }
+    $('.logout').click(function(){
+        $.ajax({
+            type: 'get',
+            url: '/user/loginOut',
+            data: {},
+            success: function(res){
+                console.log(JSON.parse(res))
+                let data = JSON.parse(res)
+                if(data.code === 0){
+                    window.location.reload()
+                }else{
+                    alert(data.msg)
+                }
+            },
+            error: function(err){
+                console.log(err)
+            }
+        })
     })
 </script>
 </html>

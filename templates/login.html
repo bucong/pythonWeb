@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>python</title>
-    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/css/style.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -59,7 +59,7 @@
                     if(data.code === 0){
                         $('.alert-success').show();
                         setTimeout(function(){
-                            window.location.href="/home/"+$('#username').val();
+                            window.location.href="/";
                         },500)
                     }else{
                         $('.alert-danger').show();

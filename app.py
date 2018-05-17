@@ -20,7 +20,10 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     # 返回html模板文件
-    return render_template('index.html')
+    username = ''
+    if request.cookies.get('username'):
+        username = request.cookies.get('username')
+    return render_template('index.html',user=username)
 # register路由
 @app.route('/register')
 def register():
@@ -78,10 +81,22 @@ def userLogin():
         res = conn_mysql(sql)  # 执行sql
         if res:
             res = {"code": 0}
-            return json.dumps(res, ensure_ascii=False)
+            response = make_response(json.dumps(res, ensure_ascii=False))
+            response.set_cookie('username', username)
+            return response
         else:
             res = {"code": 1,"msg": "用户名或密码不正确"}
             return json.dumps(res, ensure_ascii=False)
+# 退出登录接口
+@app.route('/user/loginOut',methods=['get','post'])
+# 开放接口
+@allow_cross_domain
+def userLoginOut():
+    if request.method == 'GET':
+        res = {"code": 0}
+        response = make_response(json.dumps(res, ensure_ascii=False))
+        response.delete_cookie('username')
+        return response
 # 404Error
 @app.errorhandler(404)
 def page_not_found(error):
